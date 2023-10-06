@@ -1,20 +1,19 @@
 #include <iostream>
-using namespace std;
 
 class Room
 {
-	string description;
+	std::string description;
 	int coordinates[2];
 	bool exits[4];
 
 public:
 	Room()
 	{
-		this->description = "No Description";
+		this->description = "As you enter this area, the world around you seems to melt into a pale white void. Your body feels weightless.";
 		this->coordinates[0] = 2000;
 		this-> coordinates[1] = 2000;
 	}
-	Room(string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit)
+	Room(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit)
 	{
 		this->description = description;
 		this->coordinates[0] = x;
@@ -24,11 +23,11 @@ public:
 		this->exits[2] = southExit;
 		this->exits[3] = westExit;
 	}
-	void describe() { cout << this-> description << endl; }
+	void describe() { std::cout << this-> description << std::endl; }
 	int move()
 	{
-		cout << "You are at (" << this->coordinates[0] << ", " << this->coordinates[1] << ")" << endl;
-		string moveOptions = "You can go:";
+		std::cout << "You are at (" << this->coordinates[0] << ", " << this->coordinates[1] << ")" << std::endl;
+		std::string moveOptions = "You can go:";
 		if (this->exits[0])
 		{
 			moveOptions += " N";
@@ -45,9 +44,9 @@ public:
 		{
 			moveOptions += " W";
 		}
-		cout << moveOptions << endl;
-		string input;
-		cin >> input;
+		std::cout << moveOptions << std::endl;
+		std::string input;
+		std::cin >> input;
 		char moveDir = toupper(input.at(0));
 		switch (moveDir)
 		{

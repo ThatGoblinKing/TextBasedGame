@@ -1,4 +1,5 @@
 #include "Rooms.cpp"
+#include "MapInitalizer.cpp"
 
 int main()
 {
@@ -31,5 +32,6 @@ int main()
 			playerPos[0]--;
 			break;
 		}
+		printLines(doTheThing());
 	}
 }
