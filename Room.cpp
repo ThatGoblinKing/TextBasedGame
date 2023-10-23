@@ -26,7 +26,6 @@ public:
 	void describe() { std::cout << this-> description << std::endl; }
 	int move()
 	{
-		std::cout << "You are at (" << this->coordinates[0] << ", " << this->coordinates[1] << ")" << std::endl;
 		std::string moveOptions = "You can go:";
 		if (this->exits[0])
 		{
