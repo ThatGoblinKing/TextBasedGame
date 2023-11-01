@@ -3,14 +3,15 @@
 class Room
 {
 	std::string description;
-	int coordinates[2];
+	public: 
+		int coordinates[2];
 	bool exits[4];
 
 public:
 	Room()
 	{
 		this->description = "As you enter this area, the world around you seems to melt into a pale white void. Your body feels weightless.";
-		this->coordinates[0] = 2000;
+		this-> coordinates[0] = 2000;
 		this-> coordinates[1] = 2000;
 	}
 	Room(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit)
@@ -81,4 +82,9 @@ public:
 	{
 		return (playerX == this->coordinates[0] && playerY == this->coordinates[1]);
 	}
+
+	int getUniqueNumber(){
+		return coordinates[0] >= coordinates[1] ? coordinates[0] * coordinates[0] + coordinates[0] + coordinates[1] : coordinates[0] + coordinates[1] * coordinates[1];
+	}
+	
 };

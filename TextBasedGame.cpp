@@ -1,7 +1,9 @@
 #include "Room.cpp"
 #include "MapInitalizer.cpp"
+#include <map>
 
 static void parseRoom(string rawRoom);
+static int coordsToNum(int x, int y);
 Room parsedRoom;
 
 int main()
@@ -10,25 +12,14 @@ int main()
 	const int MAP_SIZE = rawMap.size();
 	int playerPos[2] = {0, 0};
 	Room outOfBounds = Room();
-	Room map[MAP_SIZE];
+	std::map<int, Room> map;;
 	for(int i = 0; i < MAP_SIZE; i++){
 		parseRoom(rawMap[i]);
-		map[i] = parsedRoom;
+		map[parsedRoom.getUniqueNumber()] = parsedRoom;
 	}
 	Room roomIn;
 	while (1)
-	{
-		for (Room currentRoom : map)
-		{
-			if (currentRoom.inRoom(playerPos[0], playerPos[1]))
-			{
-				roomIn = currentRoom;
-				break;
-			} else {
-				roomIn = outOfBounds;
-			}
-				
-		}
+		roomIn = map[coordsToNum(playerPos[0], playerPos[1])];
 		roomIn.describe();
 		cout << "You are at: (" << playerPos[0] << ", " << playerPos[1] << ")" << endl;
 		switch (roomIn.move())
@@ -47,7 +38,6 @@ int main()
 			break;
 		}
 	}
-}
 
 static void parseRoom(string rawRoom){
     string segment[7];
@@ -56,15 +46,35 @@ static void parseRoom(string rawRoom){
         segment[i] = rawRoom.substr(0, rawRoom.find(delimeter));
 	    rawRoom.erase(0, rawRoom.find(delimeter) + delimeter.length());
     }
+	try{
 	parsedRoom = Room(segment[0], stoi(segment[1]), stoi(segment[2]), segment[3] != "false", segment[4] != "false", segment[5] != "false", segment[6] != "false");
+	} catch(exception e) {
+		cout << "A room was not loaded." << endl;
+	}
 }
+
+static int coordsToNum(int x, int y){
+	return x >= y ? x * x + x + y : x + y * y;
+}
+
 
 /* 
 To do:
 add more actions:
-	check GPS
+	check GPS (display coords)
+	check inventory:
+		Item object w/ inheritence for certain types (weapons, armor, etc.)
+			Wouldn't need many functions, just variables.
+				name
+				damage
+				durability
+				quantity
+				price
+	better directional descriptions
 
-add events:
+
+
+add events: 
 	Shops
 	Fights
 	Misc Encounters
@@ -75,5 +85,7 @@ Add rooms in
 
 event could be an object, with inheritence. 
 "EventRoom" could be a subclass of Room.
+
+Maybe rooms could be accessed via their coordinates by using a hash?
 
 */
