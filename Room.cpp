@@ -3,16 +3,17 @@
 class Room
 {
 	std::string description;
-	public: 
-		int coordinates[2];
+
+public:
+	int coordinates[2];
 	bool exits[4];
 
 public:
 	Room()
 	{
 		this->description = "As you enter this area, the world around you seems to melt into a pale white void. Your body feels weightless.";
-		this-> coordinates[0] = 2000;
-		this-> coordinates[1] = 2000;
+		this->coordinates[0] = 2000;
+		this->coordinates[1] = 2000;
 	}
 	Room(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit)
 	{
@@ -24,7 +25,7 @@ public:
 		this->exits[2] = southExit;
 		this->exits[3] = westExit;
 	}
-	void describe() { std::cout << this-> description << std::endl; }
+	void describe() { std::cout << this->description << std::endl; }
 	int move()
 	{
 		std::string moveOptions = "You can go:";
@@ -83,8 +84,23 @@ public:
 		return (playerX == this->coordinates[0] && playerY == this->coordinates[1]);
 	}
 
-	int getUniqueNumber(){
-		return coordinates[0] >= coordinates[1] ? coordinates[0] * coordinates[0] + coordinates[0] + coordinates[1] : coordinates[0] + coordinates[1] * coordinates[1];
+	std::pair<int, int> getCoords()
+	{
+		return std::pair<int, int>(coordinates[0], coordinates[1]);
 	}
-	
+};
+
+class eventRoom : public Room
+{
+	#include"Events.cpp"
+	Event event;
+	eventRoom(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit, Event roomEvent) : 
+	Room(description, x, y, northExit, eastExit, southExit, westExit)
+	{
+		this->event = roomEvent;
+	}
+	int move()
+	{
+		return Room::move();
+	}
 };

@@ -10,35 +10,39 @@ int main()
 {
 	vector<string> rawMap = getRawMap();
 	const int MAP_SIZE = rawMap.size();
-	int playerPos[2] = {0, 0};
+	std::pair<int, int> playerPos (0, 0);
+	std::pair<std::pair<int, int>, Room> insertion;
 	Room outOfBounds = Room();
-	std::map<int, Room> map;;
-	for(int i = 0; i < MAP_SIZE; i++){
-		parseRoom(rawMap[i]);
-		map[parsedRoom.getUniqueNumber()] = parsedRoom;
+	std::map<std::pair<int,int>, Room> rooms;
+	for(int i = 0; i < MAP_SIZE; i++) {
+		parseRoom(rawMap.at(i));
+		insertion.first = parsedRoom.getCoords();
+		insertion.second = parsedRoom;
+		rooms.insert(insertion);
 	}
 	Room roomIn;
-	while (1)
-		roomIn = map[coordsToNum(playerPos[0], playerPos[1])];
-		roomIn.describe();
-		cout << "You are at: (" << playerPos[0] << ", " << playerPos[1] << ")" << endl;
+	while (true)
+	{
+		roomIn = rooms[playerPos];
+		rooms[playerPos].describe();
+		//cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << endl;
 		switch (roomIn.move())
 		{
 		case 0:
-			playerPos[1]++;
+			playerPos.second++;
 			break;
 		case 1:
-			playerPos[0]++;
+			playerPos.first++;
 			break;
 		case 2:
-			playerPos[1]--;
+			playerPos.second--;
 			break;
 		case 3:
-			playerPos[0]--;
+			playerPos.first--;
 			break;
 		}
 	}
-
+}
 static void parseRoom(string rawRoom){
     string segment[7];
     string delimeter = "|";
@@ -49,7 +53,6 @@ static void parseRoom(string rawRoom){
 	try{
 	parsedRoom = Room(segment[0], stoi(segment[1]), stoi(segment[2]), segment[3] != "false", segment[4] != "false", segment[5] != "false", segment[6] != "false");
 	} catch(exception e) {
-		cout << "A room was not loaded." << endl;
 	}
 }
 
