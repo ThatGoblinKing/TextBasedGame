@@ -1,14 +1,16 @@
 #include "Room.cpp"
-#include "MapInitalizer.cpp"
 #include <map>
+#include "Item.cpp"
+#include<vector>
 
 static void parseRoom(string rawRoom);
+static vector<string> getRawMap();
 static int coordsToNum(int x, int y);
 Room parsedRoom;
 
 int main()
 {
-	vector<string> rawMap = getRawMap();
+	std::vector<string> rawMap = getRawMap();
 	const int MAP_SIZE = rawMap.size();
 	std::pair<int, int> playerPos (0, 0);
 	std::pair<std::pair<int, int>, Room> insertion;
@@ -25,7 +27,7 @@ int main()
 	{
 		roomIn = rooms[playerPos];
 		rooms[playerPos].describe();
-		//cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << endl;
+		cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << endl;
 		switch (roomIn.move())
 		{
 		case 0:
@@ -60,6 +62,22 @@ static int coordsToNum(int x, int y){
 	return x >= y ? x * x + x + y : x + y * y;
 }
 
+static vector<string> getRawMap(){
+    fstream newFile;
+    int count = 0;
+    vector<string> rawMap;
+
+    newFile.open("Map.txt", ios::in);
+    if (newFile.is_open()){
+        std::string tp;
+        while(getline(newFile, tp)){
+            rawMap.push_back(tp);
+        }
+    }
+
+    return rawMap;
+}
+
 
 /* 
 To do:
@@ -88,7 +106,4 @@ Add rooms in
 
 event could be an object, with inheritence. 
 "EventRoom" could be a subclass of Room.
-
-Maybe rooms could be accessed via their coordinates by using a hash?
-
 */

@@ -2,13 +2,12 @@
 
 class Room
 {
-	std::string description;
+	protected:
+		std::string description;
+		int coordinates[2];
+		bool exits[4];
 
-public:
-	int coordinates[2];
-	bool exits[4];
-
-public:
+	public:
 	Room()
 	{
 		this->description = "As you enter this area, the world around you seems to melt into a pale white void. Your body feels weightless.";
