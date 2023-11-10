@@ -1,7 +1,12 @@
+#include <vector>
 #include "Room.cpp"
 #include <map>
 #include "Item.cpp"
-#include<vector>
+using std::string;
+using std::vector;
+using std::pair;
+using std::cout;
+using ios::in;
 
 static void parseRoom(string rawRoom);
 static vector<string> getRawMap();
@@ -10,12 +15,12 @@ Room parsedRoom;
 
 int main()
 {
-	std::vector<string> rawMap = getRawMap();
+	vector<string> rawMap = getRawMap();
 	const int MAP_SIZE = rawMap.size();
-	std::pair<int, int> playerPos (0, 0);
-	std::pair<std::pair<int, int>, Room> insertion;
+	pair<int, int> playerPos (0, 0);
+	pair<pair<int, int>, Room> insertion;
 	Room outOfBounds = Room();
-	std::map<std::pair<int,int>, Room> rooms;
+	std::map<pair<int,int>, Room> rooms;
 	for(int i = 0; i < MAP_SIZE; i++) {
 		parseRoom(rawMap.at(i));
 		insertion.first = parsedRoom.getCoords();
@@ -27,7 +32,7 @@ int main()
 	{
 		roomIn = rooms[playerPos];
 		rooms[playerPos].describe();
-		cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << endl;
+		cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << std::endl;
 		switch (roomIn.move())
 		{
 		case 0:
@@ -63,11 +68,11 @@ static int coordsToNum(int x, int y){
 }
 
 static vector<string> getRawMap(){
-    fstream newFile;
+    std::fstream newFile;
     int count = 0;
     vector<string> rawMap;
 
-    newFile.open("Map.txt", ios::in);
+    newFile.open("Map.txt", in);
     if (newFile.is_open()){
         std::string tp;
         while(getline(newFile, tp)){
