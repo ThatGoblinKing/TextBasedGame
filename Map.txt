@@ -4,7 +4,7 @@ You're in the hull of a ship. The boards creak.|0|0|false|east|false|west
 It's a long hallway, filled with doors to the crew's sleeping quarters. The doors are all locked|1|0|false|false|south|west
 A mess hall. The tables are still filthy.|1|-1|north|false|south|false
 You're in a storage room. There are sacks of food and crates of goods scattered across the floor|1|-2|north|false|false|west
-You're at the base of a staircase up to the deck|0|-2|false|east|false|west
+Commented Out | You're at the base of a staircase up to the deck|0|-2|false|east|false|west
 The deck is covered in frigid, salty seawater as it tilts to and fro at the mercy of the waves.|-1|-2|north|east|false|false
 The staircase back into the hull is rickety, you feel as though it could collapse at any moment.|-1|-1|north|false|south|false
 Your quarters. They feel rather homely after the week you spent at sea.|-1|0|false|east|south|false

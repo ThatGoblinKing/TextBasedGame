@@ -2,19 +2,20 @@
 #include "Room.cpp"
 #include <map>
 #include "Item.cpp"
+#include "Events.cpp"
+#include <fstream>
 using std::string;
 using std::vector;
 using std::pair;
 using std::cout;
-using ios::in;
 
-static void parseRoom(string rawRoom);
+static Room parseRoom(string rawRoom);
 static vector<string> getRawMap();
-static int coordsToNum(int x, int y);
-Room parsedRoom;
 
 int main()
 {
+	string imGonnaScream = "Hello, this is a shop, buy something.";
+	Shop testShop(imGonnaScream, vector<Item>{Item(20, 1, 1, "Healing Potion", "Lets you heal, what did you expect?"), Item(200, 1, 1, "Boomerang", "Always comes back, unlike those 5 gold coins you lent to Brent all those years ago.")});
 	vector<string> rawMap = getRawMap();
 	const int MAP_SIZE = rawMap.size();
 	pair<int, int> playerPos (0, 0);
@@ -22,11 +23,14 @@ int main()
 	Room outOfBounds = Room();
 	std::map<pair<int,int>, Room> rooms;
 	for(int i = 0; i < MAP_SIZE; i++) {
-		parseRoom(rawMap.at(i));
-		insertion.first = parsedRoom.getCoords();
-		insertion.second = parsedRoom;
+		Room currentParsedRoom = parseRoom(rawMap.at(i));
+		insertion.first = currentParsedRoom.getCoords();
+		insertion.second = currentParsedRoom;
 		rooms.insert(insertion);
 	}
+	pair<pair<int, int>, Room> testEventRoom;
+	testEventRoom.first = {0, -2};
+	EventRoom::EventRoom("You're at the base of a staircase up to the deck", 0, -2, false, true, false, true, testShop);
 	Room roomIn;
 	while (true)
 	{
@@ -50,29 +54,26 @@ int main()
 		}
 	}
 }
-static void parseRoom(string rawRoom){
+static Room parseRoom(string rawRoom){
     string segment[7];
     string delimeter = "|";
     for (int i = 0; i < 7; i++){
         segment[i] = rawRoom.substr(0, rawRoom.find(delimeter));
 	    rawRoom.erase(0, rawRoom.find(delimeter) + delimeter.length());
     }
+	Room parsedRoom;
 	try{
 	parsedRoom = Room(segment[0], stoi(segment[1]), stoi(segment[2]), segment[3] != "false", segment[4] != "false", segment[5] != "false", segment[6] != "false");
-	} catch(exception e) {
+	} catch(std::invalid_argument const&) {
 	}
-}
-
-static int coordsToNum(int x, int y){
-	return x >= y ? x * x + x + y : x + y * y;
+	return parsedRoom;
 }
 
 static vector<string> getRawMap(){
     std::fstream newFile;
-    int count = 0;
     vector<string> rawMap;
 
-    newFile.open("Map.txt", in);
+    newFile.open("Map.txt", std::ios::in);
     if (newFile.is_open()){
         std::string tp;
         while(getline(newFile, tp)){

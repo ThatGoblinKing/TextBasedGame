@@ -89,17 +89,25 @@ class Room
 	}
 };
 
-class eventRoom : public Room
+class EventRoom : public Room
 {
 	#include"Events.cpp"
 	Event event;
-	eventRoom(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit, Event roomEvent) : 
-	Room(description, x, y, northExit, eastExit, southExit, westExit)
+	public:
+	EventRoom(std::string description, int x, int y, bool northExit, bool eastExit, bool southExit, bool westExit, Event& roomEvent)
 	{
+		this->description = description;
+		this->coordinates[0] = x;
+		this->coordinates[1] = y;
+		this->exits[0] = northExit;
+		this->exits[1] = eastExit;
+		this->exits[2] = southExit;
+		this->exits[3] = westExit;
 		this->event = roomEvent;
 	}
 	int move()
 	{
+		this->event.doEvent();
 		return Room::move();
 	}
 };
