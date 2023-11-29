@@ -19,7 +19,7 @@ class Shop : public Event {
     std::string prompt;
     std::vector<Item> shopInventory;
     public:
-    Shop(std::string& prompt, std::vector<Item> shopInventoy) {
+    Shop(std::string prompt, std::vector<Item> shopInventoy) {
         this->prompt = prompt;
         this->shopInventory = shopInventoy;
     }

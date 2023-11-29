@@ -4,6 +4,7 @@
 #include "Item.cpp"
 #include "Events.cpp"
 #include <fstream>
+#include<windows.h>
 using std::string;
 using std::vector;
 using std::pair;
@@ -12,11 +13,52 @@ using std::cout;
 static Room parseRoom(string rawRoom);
 static vector<string> getRawMap();
 
+/*
+
+BOAT_FRAME1:
+								  |      |      |
+							   	 )_)    )_)    )_)
+							   )____) )____) )____)
+							 )______)______)______)
+						/\________|______|______|__________/\
+				       |                                    |
+---^^~-^---^~-^------~-^\    O     o      O     o     O    /----~----~~~~~---^^-^-^---~\n
+	^~~^                 ^~^~^~^~                   ^^          ~~^~^^~\n
+				^~~~^~~~~^^                       ^^^^^\n"
+
+
+
+
+BOAT_FRAME2:
+                                  |      |      |
+                                 )_)    )_)    )_)
+                               )____) )____) )____)
+                             )______)______)______)
+                        /\________|______|______|________/\
+--^--^----^^----^-~~----`     ~~               ^^^~~^      '----~--~~^^--^---^---^~-
+     ^^^^^^             ~^~^^^~                          ^^ ^    ~~~ ~^             ^^
+                                        -----~^~^^~^~                   ^^^^
+
+								
+WELCOME:
+ _ _ _     _                   __
+| | | |___| |___ ___ _____ ___|  |
+| | | | -_| |  _| . |     | -_|__|
+|_____|___|_|___|___|_|_|_|___|__|
+                                  
+
+*/
+
+
+
+
 int main()
 {
-	string imGonnaScream = "Hello, this is a shop, buy something.";
-	Shop testShop(imGonnaScream, vector<Item>{Item(20, 1, 1, "Healing Potion", "Lets you heal, what did you expect?"), Item(200, 1, 1, "Boomerang", "Always comes back, unlike those 5 gold coins you lent to Brent all those years ago.")});
-	vector<string> rawMap = getRawMap();
+	const string BOAT_FRAME1 ="				  |      |      |\n				 )_)    )_)    )_)\n			       )____) )____) )____)\n			     )______)______)______)\n			/\\________|______|______|________/\\\n		       |                                   |\n---^^~-^---^~-^------~-^\\ ~~ O    ^o      O     o     O ^^ /----~----~~~~~---^^-^-^---~\n		^~~^                 ^~^~^~^~                   ^^          ~~^~^^~\n					^~~~^~~~~^^                       ^^^^^\n\n";
+	const string BOAT_FRAME2 ="\n				  |      |      |\n				 )_)    )_)    )_)\n			       )____) )____) )____)\n			     )______)______)______)\n			/\\________|______|______|________/\\\n--^--^----^^----^-~~----`     ~~               ^^^~~^      '----~--~~^^--^---^---^~-\n     ^^^^^^ 		~^~^^^~                          ^^ ^    ~~~ ~^             ^^\n	  				-----~^~^^~^~                   ^^^^\n\n";
+	const string WELCOME = " _   _     _\t\t       __\n| | | |___| |___ ___ _____ ___|  |\n| | | | -_| |  _| . |     | -_|__|\n|_____|___|_|___|___|_|_|_|___|__|\n";
+	Shop testShop = new Shop("Hello, this is a shop, buy something.", vector<Item>{Item(20, 1, 1, "Healing Potion", "Lets you heal, what did you expect?"), Item(200, 1, 1, "Boomerang", "Always comes back, unlike those 5 gold coins you lent to Brent all those years ago.")});
+	vector<string> rawMap = getRawMap(); 
 	const int MAP_SIZE = rawMap.size();
 	pair<int, int> playerPos (0, 0);
 	pair<pair<int, int>, Room> insertion;
@@ -30,14 +72,58 @@ int main()
 	}
 	pair<pair<int, int>, Room> testEventRoom;
 	testEventRoom.first = {0, -2};
-	EventRoom::EventRoom("You're at the base of a staircase up to the deck", 0, -2, false, true, false, true, testShop);
+	//EventRoom *erm = new EventRoom("You're at the base of a staircase up to the deck", 0, -2, false, true, false, true, &testShop);
 	Room roomIn;
+	pair<int, int> adjacentCoords;
+	string adjacentRoomDescriptions[4];
+
+	for(int i = 0; i<12; i++) {
+		cout << WELCOME;
+		switch (i%2)
+		{
+		case 0: 
+		cout << BOAT_FRAME1 << std::flush;
+			break;
+		
+		default:
+		cout << BOAT_FRAME2 << std::flush;
+			break;
+		}
+		Sleep(800);
+	}
+
+	//-----------------------------------------------------------------------------------------------------------------------------------+
+	//Game Loop
+
 	while (true)
 	{
 		roomIn = rooms[playerPos];
-		rooms[playerPos].describe();
+		roomIn.describe();
 		cout << "You are at: (" << playerPos.first << ", " << playerPos.second << ")" << std::endl;
-		switch (roomIn.move())
+		for(int i = 0; i < 4; i ++){
+			adjacentCoords = playerPos;
+			switch(i) {
+				case 0:
+					adjacentCoords.second = playerPos.second + 1;
+					break;
+				case 1:
+					adjacentCoords.first = playerPos.first + 1;
+					break;
+				case 2:
+					adjacentCoords.second = playerPos.second - 1;
+					break;
+				case 3:
+					adjacentCoords.first = playerPos.first - 1;
+					break;
+			}
+			try {
+				adjacentRoomDescriptions[i] = rooms[adjacentCoords].getShortDescription();
+			} catch(std::exception)
+			{
+				adjacentRoomDescriptions[i] = "null";
+			}
+		}
+		switch (roomIn.move(adjacentRoomDescriptions))
 		{
 		case 0:
 			playerPos.second++;
@@ -54,16 +140,18 @@ int main()
 		}
 	}
 }
+
+
 static Room parseRoom(string rawRoom){
     string segment[7];
     string delimeter = "|";
-    for (int i = 0; i < 7; i++){
+    for (int i = 0; i < 4; i++){
         segment[i] = rawRoom.substr(0, rawRoom.find(delimeter));
 	    rawRoom.erase(0, rawRoom.find(delimeter) + delimeter.length());
     }
 	Room parsedRoom;
 	try{
-	parsedRoom = Room(segment[0], stoi(segment[1]), stoi(segment[2]), segment[3] != "false", segment[4] != "false", segment[5] != "false", segment[6] != "false");
+	parsedRoom = Room(segment[0], segment[1], stoi(segment[2]), stoi(segment[3]));
 	} catch(std::invalid_argument const&) {
 	}
 	return parsedRoom;
